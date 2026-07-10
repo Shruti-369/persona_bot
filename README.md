@@ -1,4 +1,5 @@
 # Bf_bot
+Memory-Enabled AI Companion with Long-Term Context, Persona Engine, User Profiling, and Intelligent Prompt Builder.
 
 1. npm install openai dotenv
 2. npm install express cors
