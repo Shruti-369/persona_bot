@@ -3,6 +3,7 @@ import cors from "cors";
 
 import { callLLM } from "./llm.js";
 import { loadMemory, saveMemory } from "./memory.js";
+import { generateSummary } from "./summary.js";
 
 const app = express();
 
@@ -88,6 +89,14 @@ app.post("/chat", async (req, res) => {
         while (memory.recentConversations.length > 20) {
 
             memory.recentConversations.shift();
+
+        }
+
+        if (memory.recentTurns.length >= 20) {
+
+            memory.summary = await generateSummary(memory);
+
+            memory.recentTurns = [];
 
         }
 
