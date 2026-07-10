@@ -3,17 +3,25 @@ import fs from "fs";
 const FILE = "./memory.json";
 
 export function loadMemory() {
+
     if (!fs.existsSync(FILE)) {
+
         return {
             summary: "",
-            firstMessages: [],
-            recentMessages: [],
+            firstConversations: [],
+            recentConversations: [],
         };
+
     }
 
     return JSON.parse(fs.readFileSync(FILE, "utf8"));
 }
 
 export function saveMemory(memory) {
-    fs.writeFileSync(FILE, JSON.stringify(memory, null, 2));
+
+    fs.writeFileSync(
+        FILE,
+        JSON.stringify(memory, null, 4)
+    );
+
 }

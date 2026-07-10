@@ -12,76 +12,115 @@ app.use(express.json());
 const memory = loadMemory();
 
 app.post("/chat", async (req, res) => {
+
     try {
 
         const { message } = req.body;
 
         if (!message || typeof message !== "string") {
+
             return res.status(400).json({
-                error: "message is required",
+                error: "message is required"
             });
+
         }
 
-        // Build history for LLM
-        const history = [
-            ...memory.firstMessages,
-            ...memory.recentMessages,
-        ];
+        //--------------------------------------------------
+        // Convert conversations into OpenAI history format
+        //--------------------------------------------------
 
-        // Get AI reply
+        const history = [];
+
+        for (const convo of memory.firstConversations) {
+
+            history.push({
+                role: "user",
+                content: convo.user
+            });
+
+            history.push({
+                role: "assistant",
+                content: convo.assistant
+            });
+
+        }
+
+        for (const convo of memory.recentConversations) {
+
+            history.push({
+                role: "user",
+                content: convo.user
+            });
+
+            history.push({
+                role: "assistant",
+                content: convo.assistant
+            });
+
+        }
+
+        //--------------------------------------------------
+
         const reply = await callLLM(message, history);
 
-        // User Message
-        const userMessage = {
-            role: "user",
-            content: message,
+        const conversation = {
+
+            user: message,
+
+            assistant: reply
+
         };
 
-        // Assistant Message
-        const assistantMessage = {
-            role: "assistant",
-            content: reply,
-        };
+        //--------------------------------------------------
 
-        // Save User
-        if (memory.firstMessages.length < 20) {
-            memory.firstMessages.push(userMessage);
-        } else {
-            memory.recentMessages.push(userMessage);
+        if (memory.firstConversations.length < 10) {
+
+            memory.firstConversations.push(conversation);
+
         }
 
-        // Save Assistant
-        if (memory.firstMessages.length < 20) {
-            memory.firstMessages.push(assistantMessage);
-        } else {
-            memory.recentMessages.push(assistantMessage);
+        else {
+
+            memory.recentConversations.push(conversation);
+
         }
 
-        // Keep only last 20 recent messages
-        while (memory.recentMessages.length > 20) {
-            memory.recentMessages.shift();
+        while (memory.recentConversations.length > 20) {
+
+            memory.recentConversations.shift();
+
         }
 
-        // Save into memory.json
         saveMemory(memory);
 
+        //--------------------------------------------------
+
         res.json({
-            reply,
-        });
 
-    } catch (err) {
+            reply
 
-        console.error(err);
-
-        res.status(500).json({
-            error: "Something went wrong",
         });
 
     }
+
+    catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+
+            error: "Something went wrong"
+
+        });
+
+    }
+
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`Bf_bot server running on http://localhost:${PORT}`);
+
+    console.log(`Server running on ${PORT}`);
+
 });
