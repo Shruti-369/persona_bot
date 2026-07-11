@@ -5,10 +5,13 @@
     "userProfile": {
         "name": "",
         "nickname": "",
+        "relationship": "",
+        "mood": "",
         "likes": [],
         "dislikes": [],
-        "college": "",
         "hobbies": [],
-        "importantFacts": []
+        "goals": [],
+        "importantFacts": [],
+        "promises": []
     }
 }
