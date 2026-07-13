@@ -19,9 +19,12 @@ export async function callLLM(userMessage, memory) {
 
         messages,
 
-        temperature: 0.8,
+        temperature: 1,
 
         max_tokens: 500,
+        top_p: 0.95,
+        frequency_penalty: 0.8,
+        presence_penalty: 0.7
 
     });
 
