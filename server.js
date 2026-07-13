@@ -92,6 +92,39 @@ app.post("/chat", async (req, res) => {
 
         }
 
+        //Personality Update
+        memory.personalityCount++;
+
+        if (memory.personalityCount >= 5) {
+
+            const moods = [
+
+                "romantic",
+
+                "funny",
+
+                "protective",
+
+                "supportive",
+
+                "flirty"
+
+            ];
+
+            const random =
+
+                moods[
+                Math.floor(
+                    Math.random() * moods.length
+                )
+                ];
+
+            memory.currentPersonality = random;
+
+            memory.personalityCount = 0;
+
+        }
+
         // ==========================
         // Save Memory
         // ==========================
@@ -121,6 +154,7 @@ app.post("/chat", async (req, res) => {
         });
 
     }
+
 
 });
 
