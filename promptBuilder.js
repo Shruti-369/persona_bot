@@ -19,8 +19,13 @@ export function buildPrompt(memory, userMessage) {
     // =============================
 
     messages.push({
+
         role: "system",
-        content: BF_PERSONA,
+
+        content: PERSONALITIES[
+            memory.currentPersonality
+        ]
+
     });
 
     // =============================
